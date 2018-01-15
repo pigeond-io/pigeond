@@ -1,0 +1,21 @@
+version: '3'
+services:
+  edge-1:
+    image: golang:1.9-alpine
+    volumes:
+      - $GOPATH/src:/go/src
+    working_dir: /go/src/github.com/pigeond-io/pigeond
+    command: go run main.go --service=edge
+    ports:
+      - "8001:8001"
+      - "8002:8002"
+
+  edge-2:
+    image: golang:1.9-alpine
+    volumes:
+      - $GOPATH/src:/go/src
+    working_dir: /go/src/github.com/pigeond-io/pigeond
+    command: go run main.go --service=edge
+    ports:
+      - "8003:8001"
+      - "8004:8002"
