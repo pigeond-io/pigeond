@@ -5,7 +5,7 @@
 package utils_test
 
 import(
-  "github.com/pigeond-io/pigeond/utils"
+  "github.com/pigeond-io/pigeond/common/utils"
   "testing"
 )
 

@@ -1,14 +1,21 @@
+// Copyright 2018 The PigeonD Authors. All rights reserved.
+// Use of this source code is governed by a GNU AGPL v3.0
+// license that can be found in the AGPL V3 LICENSE file.
+
 package main
 
 import (
-	. "github.com/pigeond-io/pigeond/core"
+	. "github.com/pigeond-io/pigeond/common"
 	"github.com/pigeond-io/pigeond/edge"
 	"os"
 	"gopkg.in/urfave/cli.v1"
 	"errors"
+	"github.com/pigeond-io/pigeond/common/utils"
 )
 
 func main()  {
+	println(utils.GetHeader())
+
 	app := cli.NewApp()
 	app.Name = "pigeond"
 	app.Usage = "Start services"

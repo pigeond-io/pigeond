@@ -6,7 +6,7 @@ package utils
 
 import (
   "fmt"
-  "github.com/pigeond-io/pigeond/log"
+  "github.com/pigeond-io/pigeond/common/log"
   "os"
   "os/signal"
   "syscall"

@@ -2,10 +2,64 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/NebulousLabs/fastrand"
+  packages = ["."]
+  revision = "60b615657d85339c105efb2170327a2d948d4b17"
+
+[[projects]]
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
+  version = "v3.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gobwas/httphead"
+  packages = ["."]
+  revision = "01c9b01b368a438f615030bbbd5e4f9e0023e15c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gobwas/pool"
+  packages = [".","pbufio","pbytes"]
+  revision = "e294a5482d9a8523f8e6b2744ea2185083c838af"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gobwas/ws"
+  packages = [".","wsutil"]
+  revision = "48a5ceab2cbeff56f13c0328c63c3393b92ec9aa"
+
+[[projects]]
   name = "github.com/gorilla/websocket"
   packages = ["."]
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
   version = "v1.2.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/joonix/log"
+  packages = ["."]
+  revision = "9f489441df72b5a985b0ee0423850c7999a3a09b"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
+  version = "v1.0.4"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["blake2b","ssh/terminal"]
+  revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix","windows"]
+  revision = "fff93fa7cd278d84afc205751523809c464168ab"
 
 [[projects]]
   name = "gopkg.in/urfave/cli.v1"
@@ -16,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a41891a7e3e6f2fd40e9b22a1bbd741cb7f5ee52912570488106948e09174317"
+  inputs-digest = "eeb1d593b603f0b2c6bf49a0ae1305a8dfaf0620061d7f79a65762ef1b5de4aa"
   solver-name = "gps-cdcl"
   solver-version = 1

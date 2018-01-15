@@ -7,8 +7,8 @@ package edge
 import (
   "github.com/gobwas/ws"
   "github.com/gobwas/ws/wsutil"
-  "github.com/pigeond-io/pigeond/log"
-  "github.com/pigeond-io/pigeond/stats"
+  "github.com/pigeond-io/pigeond/common/log"
+  "github.com/pigeond-io/pigeond/common/stats"
   "github.com/dgrijalva/jwt-go"
   "io"
   "net"

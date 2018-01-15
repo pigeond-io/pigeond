@@ -8,7 +8,7 @@ import(
   "sync/atomic"
   "time"
   "fmt"
-  "github.com/pigeond-io/pigeond/log"
+  "github.com/pigeond-io/pigeond/common/log"
   "runtime"
 )
 

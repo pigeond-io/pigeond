@@ -6,9 +6,9 @@ package main
 
 import (
   "flag"
-  "github.com/pigeond-io/pigeond/log"
-  "github.com/pigeond-io/pigeond/stats"
-  "github.com/pigeond-io/pigeond/utils"
+  "github.com/pigeond-io/pigeond/common/log"
+  "github.com/pigeond-io/pigeond/common/stats"
+  "github.com/pigeond-io/pigeond/common/utils"
   "github.com/pigeond-io/pigeond/edge"
 )
 

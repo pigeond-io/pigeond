@@ -1,8 +1,12 @@
+// Copyright 2018 The PigeonD Authors. All rights reserved.
+// Use of this source code is governed by a GNU AGPL v3.0
+// license that can be found in the AGPL V3 LICENSE file.
+
 package client
 
 import (
 	"github.com/gorilla/websocket"
-	. "github.com/pigeond-io/pigeond/core"
+	. "github.com/pigeond-io/pigeond/common"
 )
 
 var Clients = make(map[*websocket.Conn]bool) // connection exist or not
