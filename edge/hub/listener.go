@@ -6,7 +6,7 @@ package hub
 
 import (
 	"fmt"
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 	"github.com/pigeond-io/pigeond/edge/client"
 	"net"
 )
@@ -14,7 +14,7 @@ import (
 func Listen(port int, buffer int) {
 	conn, err := connect(port)
 	if err != nil {
-		Error.Println("Error in starting connection: ", err)
+		log.Error("Error in starting connection: ", err)
 		return
 	}
 
@@ -22,7 +22,7 @@ func Listen(port int, buffer int) {
 
 	for {
 		n, remoteaddr, err := conn.ReadFromUDP(messageBytes)
-		fmt.Printf("Read a message from %v %s \n", remoteaddr, string(messageBytes[:n]))
+		log.Info("Read a message from ", remoteaddr, string(messageBytes[:n]))
 		if err != nil {
 			fmt.Printf("Some error  %v", err)
 			continue
