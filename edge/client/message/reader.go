@@ -5,14 +5,13 @@
 package message
 
 import (
-	. "github.com/pigeond-io/pigeond/common"
 	"github.com/gorilla/websocket"
-	"github.com/pigeond-io/pigeond/edge/hub"
+	. "github.com/pigeond-io/pigeond/common"
 	. "github.com/pigeond-io/pigeond/edge/client"
+	"github.com/pigeond-io/pigeond/edge/hub"
 )
 
 type DefaultMessageReader struct {
-
 }
 
 var hubSender *hub.Sender
@@ -33,4 +32,3 @@ func (reader DefaultMessageReader) Read(conn *websocket.Conn, messageBytes []byt
 		break
 	}
 }
-

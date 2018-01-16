@@ -6,8 +6,8 @@ package client
 
 import (
 	"github.com/gorilla/websocket"
-	"net/http"
 	. "github.com/pigeond-io/pigeond/common"
+	"net/http"
 )
 
 var upgrader = websocket.Upgrader{

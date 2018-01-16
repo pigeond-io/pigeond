@@ -5,21 +5,23 @@
 package hub
 
 import (
-	"net"
-	"fmt"
 	"bufio"
+	"fmt"
 	"log"
+	"net"
 	"strconv"
 )
 
 type Sender struct {
 	Conn net.Conn
 }
+
 var UDPSender *Sender
+
 const port = 8002
 const bufferLength = 2048
 
-func GetSender() (*Sender, error)  {
+func GetSender() (*Sender, error) {
 	if UDPSender != nil {
 		return UDPSender, nil
 	}
@@ -28,7 +30,7 @@ func GetSender() (*Sender, error)  {
 	return UDPSender, nil
 }
 
-func (sender Sender) Close()  {
+func (sender Sender) Close() {
 	conn := sender.Conn
 	if conn == nil {
 		return
@@ -41,7 +43,7 @@ func (sender Sender) Send(message string) {
 	conn := sender.Conn
 
 	log.Print("Sending message: ", message, " connection: ", conn)
-	buffer :=  make([]byte, bufferLength)
+	buffer := make([]byte, bufferLength)
 	fmt.Fprintf(conn, message)
 
 	_, err := bufio.NewReader(conn).Read(buffer)
@@ -54,7 +56,7 @@ func (sender Sender) Send(message string) {
 
 func createConnection(port int) (*Sender, error) {
 	sender := &Sender{}
-	conn, err := net.Dial("udp", "127.0.0.1:" + strconv.Itoa(port))
+	conn, err := net.Dial("udp", "127.0.0.1:"+strconv.Itoa(port))
 	if err != nil {
 		return sender, err
 	}

@@ -6,27 +6,26 @@ package client
 
 import (
 	"encoding/json"
-	. "github.com/pigeond-io/pigeond/common"
 	"github.com/gorilla/websocket"
+	. "github.com/pigeond-io/pigeond/common"
 )
 
 type MessageType int
+
 const (
 	SUBSCRIBE MessageType = 1
-	PUBLISH = 2
+	PUBLISH               = 2
 )
 
 type Message struct {
-	Type MessageType `json:"type"`
-	Topic string `json:"topic"`
-	Data string `json:"data"`
+	Type  MessageType `json:"type"`
+	Topic string      `json:"topic"`
+	Data  string      `json:"data"`
 }
-
 
 type MessageReader interface {
-	Read (*websocket.Conn, []byte)
+	Read(*websocket.Conn, []byte)
 }
-
 
 func GetMessage(messageStr []byte) *Message {
 	message := &Message{}

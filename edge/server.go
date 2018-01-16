@@ -6,10 +6,10 @@ package edge
 
 import (
   "fmt"
+  "github.com/dgrijalva/jwt-go"
   "github.com/gobwas/ws"
   "github.com/pigeond-io/pigeond/common/log"
   "github.com/pigeond-io/pigeond/common/stats"
-  "github.com/dgrijalva/jwt-go"
   "io"
   "net"
   "net/http"
@@ -18,9 +18,9 @@ import (
 )
 
 var (
-  KeepAliveInterval = 1 * time.Minute
+  KeepAliveInterval         = 1 * time.Minute
   allowAnonymousConnections = true
-  jwtSecretKey = []byte("PigeondJWTSecretKey")
+  jwtSecretKey              = []byte("PigeondJWTSecretKey")
 )
 
 // Zero-copy Upgrade Websocket Server which allows both anonymous and jwt based authorized connections.
@@ -67,7 +67,7 @@ func initWsClient(conn net.Conn) {
     terminateConnection(conn, err)
     return
   }
-  if (token == "") {
+  if token == "" {
     if !allowAnonymousConnections {
       terminateConnection(conn, "Anonymous Connections Not Allowed")
     } else {
@@ -81,7 +81,7 @@ func initWsClient(conn net.Conn) {
     }
     if !jToken.Valid {
       terminateConnection(conn, "Invalid Token")
-      return 
+      return
     }
     InitWsClient(conn, jToken)
   }
@@ -102,12 +102,12 @@ func terminateConnection(conn net.Conn, err interface{}) {
 
 // Parses the JWT token
 // TODO: Define & Validate Manadatory JWT Claims Fields
-func parseToken(token string) (*jwt.Token, error){
+func parseToken(token string) (*jwt.Token, error) {
   log.WithFields("edge.server").Debug("Token: %s", token)
-  jToken, err := jwt.Parse(token, 
-    func(jToken *jwt.Token)(interface{}, error) {
+  jToken, err := jwt.Parse(token,
+    func(jToken *jwt.Token) (interface{}, error) {
       if _, ok := jToken.Method.(*jwt.SigningMethodHMAC); !ok {
-          return nil, fmt.Errorf("Unexpected signing method: %v", jToken.Header["alg"])
+        return nil, fmt.Errorf("Unexpected signing method: %v", jToken.Header["alg"])
       }
       return jwtSecretKey, nil
     })
@@ -116,8 +116,8 @@ func parseToken(token string) (*jwt.Token, error){
 
 // Before WebSocket Uprade OnRequest Callback
 // Here we check the Host and Request Uri. If everything is okay we store the JWT token from the request uri.
-func onWsUpgradeRequest(token *string) func ([]byte, []byte) (error, int) {
-  return func (host, uri []byte) (err error, code int) {
+func onWsUpgradeRequest(token *string) func([]byte, []byte) (error, int) {
+  return func(host, uri []byte) (err error, code int) {
     if !isHostOk(string(host)) {
       return fmt.Errorf("Bad Request"), 403
     }
