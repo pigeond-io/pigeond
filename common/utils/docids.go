@@ -13,11 +13,14 @@ type DocIds interface {
   Clear()                   //Clears the collection
 }
 
-// DocIndex is a common interface that encapsulates different implementations of inverted index of 64-bit Integers to Collection of 64-bit Integers
-type DocIndex interface {
-  Add(keyId int64, docId int64)           //Links keyId to docId
-  Remove(keyId int64, docId int64)        //Removes keyId to docId
-  Contains(keyId int64, docId int64) bool //Checks whether docId and keyId are linked or not
-  Values(keyId int64) []int64             //Returns all the docIds that are linked to keyId
-  Clear()                                 //Clears index
+// DocEdge is a common interface that encapsulates different implementations of many to many relationships. It represents as a collection of edges
+type DocEdges interface {
+  AddEdge(sourceId int64, targetId int64)           //Adds an edge from sourceId to targetId
+  RemoveEdge(sourceId int64, targetId int64)        //Reoves an edge from sourceId to targetId
+  RemoveSource(sourceId int64)                      //Removes the sourceId and all the links originating from sourceId
+  RemoveTarget(targetId int64)                      //Removes the targetId and all the links terminating to targetId
+  ContainsEdge(sourceId int64, targetId int64) bool //Checks whether edge between and keyId are linked or not
+  SourceIds(targetId int64) []int64                 //Returns all the sourceIds where an edge exists to targetId
+  TargetIds(sourceId int64) []int64                 //Returns all the targetIds where an edge exists from sourceId
+  Clear()                                           //Clears
 }
