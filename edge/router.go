@@ -5,18 +5,17 @@
 package edge
 
 import (
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 	"github.com/pigeond-io/pigeond/edge/client"
 	"github.com/pigeond-io/pigeond/edge/client/message"
 	"github.com/pigeond-io/pigeond/edge/hub"
-	"log"
 	"net/http"
 	"strconv"
 	"sync"
 )
 
 func Init() {
-	Info.Print("Edge server initialization started....")
+	log.Info("Edge server initialization started....")
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -31,21 +30,21 @@ func Init() {
 		initHubListener(8001)
 	}()
 
-	Info.Print("Edge server initialization done ")
+	log.Info("Edge server initialization done ")
 
 	wg.Wait()
 }
 
 func initClientListener(port int) {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Websocket connection")
+		log.Info("Websocket connection")
 		client.Handler(w, r, message.DefaultMessageReader{})
 	})
 
 	addr := ":" + strconv.Itoa(port)
-	Info.Print("Client listening on websocket : ", addr)
+	log.Info("Client listening on websocket : ", addr)
 	response := http.ListenAndServe(addr, nil)
-	Error.Println(response)
+	log.Fatal(response)
 }
 
 func initHubListener(port int) {

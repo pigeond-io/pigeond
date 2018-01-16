@@ -6,7 +6,7 @@ package main
 
 import (
 	"errors"
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 	"github.com/pigeond-io/pigeond/common/utils"
 	"github.com/pigeond-io/pigeond/edge"
 	"gopkg.in/urfave/cli.v1"
@@ -36,7 +36,7 @@ func main() {
 			edge.Init()
 			break
 		default:
-			Error.Println("Invalid service name")
+			log.Error("Invalid service name")
 			return errors.New("invalid service name")
 		}
 		return nil

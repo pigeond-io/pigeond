@@ -6,7 +6,7 @@ package message
 
 import (
 	"github.com/gorilla/websocket"
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 	. "github.com/pigeond-io/pigeond/edge/client"
 	"github.com/pigeond-io/pigeond/edge/hub"
 )
@@ -17,10 +17,10 @@ type DefaultMessageReader struct {
 var hubSender *hub.Sender
 
 func (reader DefaultMessageReader) Read(conn *websocket.Conn, messageBytes []byte) {
-	Info.Println("Received message: ", string(messageBytes))
+	log.Info("Received message: ", string(messageBytes))
 
 	message := GetMessage(messageBytes)
-	Info.Println("Received message from topic: ", message.Topic, " of type: ", string(messageBytes), "  contains data: ", message.Data)
+	log.Info("Received message from topic: ", message.Topic, " of type: ", string(messageBytes), "  contains data: ", message.Data)
 
 	switch message.Type {
 	case SUBSCRIBE:

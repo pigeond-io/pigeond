@@ -7,7 +7,7 @@ package client
 import (
 	"encoding/json"
 	"github.com/gorilla/websocket"
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 )
 
 type MessageType int
@@ -31,7 +31,7 @@ func GetMessage(messageStr []byte) *Message {
 	message := &Message{}
 	err := json.Unmarshal(messageStr, message)
 	if err != nil {
-		Error.Printf("Error in parsing message: %s Error: %s", string(messageStr), err)
+		log.Error("Error in parsing message: %s Error: %s", string(messageStr), err)
 	}
 	return message
 }

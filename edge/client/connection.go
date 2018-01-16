@@ -6,14 +6,14 @@ package client
 
 import (
 	"github.com/gorilla/websocket"
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 )
 
 var Clients = make(map[*websocket.Conn]bool)              // connection exist or not
 var TopicSubscribers = make(map[string][]*websocket.Conn) // connected clients/ topic - connection mapping
 
 func Subscribe(conn *websocket.Conn, topicName string) error {
-	Info.Print("Subscribing to topic: ", topicName)
+	log.Info("Subscribing to topic: ", topicName)
 	TopicSubscribers[topicName] = append(TopicSubscribers[topicName], conn)
 	return nil
 }
@@ -25,10 +25,10 @@ func Publish(topicName string, data string) error {
 				continue
 			}
 
-			Info.Println("Publishing message: ", data)
+			log.Info("Publishing message: ", data)
 			err := conn.WriteMessage(websocket.TextMessage, []byte(data))
 			if err != nil {
-				Error.Println("write error: ", err)
+				log.Error("write error: ", err)
 			}
 		}
 	}

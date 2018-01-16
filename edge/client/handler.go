@@ -6,7 +6,7 @@ package client
 
 import (
 	"github.com/gorilla/websocket"
-	. "github.com/pigeond-io/pigeond/common"
+	"github.com/pigeond-io/pigeond/common/log"
 	"net/http"
 )
 
@@ -21,7 +21,7 @@ var upgrader = websocket.Upgrader{
 func Handler(w http.ResponseWriter, r *http.Request, reader MessageReader) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		Error.Print("upgrade Error:", err)
+		log.Error("upgrade Error:", err)
 		return
 	}
 
@@ -34,7 +34,7 @@ func Handler(w http.ResponseWriter, r *http.Request, reader MessageReader) {
 	for {
 		messageType, messageStr, err := conn.ReadMessage()
 		if err != nil {
-			Error.Println("read Error:", err)
+			log.Error("read Error:", err)
 			break
 		}
 
