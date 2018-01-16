@@ -5,28 +5,28 @@
 package main
 
 import (
-  "flag"
-  "github.com/pigeond-io/pigeond/common/log"
-  "github.com/pigeond-io/pigeond/common/stats"
-  "github.com/pigeond-io/pigeond/common/utils"
-  "github.com/pigeond-io/pigeond/edge"
+	"flag"
+	"github.com/pigeond-io/pigeond/common/log"
+	"github.com/pigeond-io/pigeond/common/stats"
+	"github.com/pigeond-io/pigeond/common/utils"
+	"github.com/pigeond-io/pigeond/edge"
 )
 
 var (
-  addr      = flag.String("addr", "localhost:8765", "edge server address")
-  debugMode = flag.Bool("debug", true, "enable debug mode")
-  logFile   = flag.String("log", "", "log file")
+	addr      = flag.String("addr", "localhost:8765", "edge server address")
+	debugMode = flag.Bool("debug", true, "enable debug mode")
+	logFile   = flag.String("log", "", "log file")
 )
 
 func main() {
-  flag.Parse()
-  utils.InitProcess("edge", func(name string) {
-    log.Init(name, *logFile, *debugMode)
-  })
-  utils.OnProcessExit(func() {
-    //close file descriptors
-  })
-  println(utils.GetHeader())
-  go stats.Logger()
-  edge.InitWsServer(*addr)
+	flag.Parse()
+	utils.InitProcess("edge", func(name string) {
+		log.Init(name, *logFile, *debugMode)
+	})
+	utils.OnProcessExit(func() {
+		//close file descriptors
+	})
+	println(utils.GetHeader())
+	go stats.Logger()
+	edge.InitWsServer(*addr)
 }

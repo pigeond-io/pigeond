@@ -5,24 +5,24 @@
 package utils
 
 import (
-  "fmt"
-  "github.com/pigeond-io/pigeond/common/log"
-  "os"
-  "os/signal"
-  "syscall"
+	"fmt"
+	"github.com/pigeond-io/pigeond/common/log"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func InitProcess(processName string, initClosure func(string)) {
-  initClosure(fmt.Sprintf("%s-%d", processName, os.Getpid()))
+	initClosure(fmt.Sprintf("%s-%d", processName, os.Getpid()))
 }
 
 func OnProcessExit(exitClosure func()) {
-  sigs := make(chan os.Signal, 1)
-  signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-  go func() {
-    <-sigs
-    log.Debug("Exiting...")
-    exitClosure()
-    os.Exit(0)
-  }()
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		log.Debug("Exiting...")
+		exitClosure()
+		os.Exit(0)
+	}()
 }
