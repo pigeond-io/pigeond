@@ -7,11 +7,12 @@ package utils_test
 import (
 	"github.com/pigeond-io/pigeond/common/utils"
 	"testing"
+	"time"
 )
 
 func BenchmarkIntSetAdd(b *testing.B) {
 	// run the Fib function b.N times
-	intset := utils.MakeIntSet()
+	intset := utils.MakeIntSet(nil)
 	var n int64
 	for n = 0; n < int64(b.N); n++ {
 		intset.Add(n)
@@ -21,7 +22,7 @@ func BenchmarkIntSetAdd(b *testing.B) {
 
 func BenchmarkIntSetAdd3Threads(b *testing.B) {
 	// run the Fib function b.N times
-	intset := utils.MakeIntSet()
+	intset := utils.MakeIntSet(nil)
 	done := make(chan bool)
 	worker := func(i int64) {
 		var n int64
@@ -39,8 +40,8 @@ func BenchmarkIntSetAdd3Threads(b *testing.B) {
 }
 
 func TestIntSet(t *testing.T) {
-	utils.MaxDirtyInterval = 0
-	intset := utils.MakeIntSet()
+	cacheDirtyValidity := time.Duration(0)
+	intset := utils.MakeIntSet(&cacheDirtyValidity)
 	count := 0
 	intset.Add(1)
 	count++

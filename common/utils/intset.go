@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	MaxDirtyInterval = 5 * time.Minute //Maximum age of dirty members cache
+	defaultDirtyCacheDuration = 5 * time.Minute //Default duration for which dirty cache is valid
 )
 
 /*
@@ -19,17 +19,26 @@ var (
   Members cache is made dirty only on removal
 */
 type IntSet struct {
-	Count   int                //Member count
-	members []int64            //Eventually consistent Members Cache
-	index   map[int64]struct{} //Index keyed with members
-	dirty   int64              //Timestamp when the members cache got dirty
-	lock    sync.RWMutex       //ReadWrite synchronization mutex
+	Count              int                //Member count
+	members            []int64            //Eventually consistent Members Cache
+	index              map[int64]struct{} //Index keyed with members
+	dirty              int64              //Timestamp when the members cache got dirty
+	dirtyCacheDuration time.Duration      //Duration for which dirty members cache is valid
+	lock               sync.RWMutex       //ReadWrite synchronization mutex
 }
 
-func MakeIntSet() *IntSet {
+// Constructor to create intsets. It uses first parameter as the dirtyCacheDuration as pointer to time.Duration, if nil dirtyCacheDuration is set to default dirty interval i.e. defaultDirtyCacheDuration. Followed by variable number of int64 members
+func MakeIntSet(dirtyCacheDuration *time.Duration, args ...int64) *IntSet {
+	if dirtyCacheDuration == nil {
+		dirtyCacheDuration = &defaultDirtyCacheDuration
+	}
 	intset := &IntSet{
-		index:   make(map[int64]struct{}),
-		members: make([]int64, 0),
+		index:              make(map[int64]struct{}),
+		members:            make([]int64, 0),
+		dirtyCacheDuration: *dirtyCacheDuration,
+	}
+	for _, a := range args {
+		intset.add(a)
 	}
 	return intset
 }
@@ -50,9 +59,7 @@ func (s *IntSet) Add(a int64) {
 	if !ok {
 		l.RUnlock()
 		l.Lock()
-		s.index[a] = struct{}{}
-		s.members = append(s.members, a)
-		s.Count++
+		s.add(a)
 		l.Unlock()
 	} else {
 		l.RUnlock()
@@ -109,7 +116,7 @@ func (s *IntSet) Members() []int64 {
 }
 
 func (s *IntSet) shouldCleanUp() bool {
-	return s.isDirty() && (time.Since(time.Unix(s.dirty, 0)) > MaxDirtyInterval)
+	return s.isDirty() && (time.Since(time.Unix(s.dirty, 0)) > s.dirtyCacheDuration)
 }
 
 func (s *IntSet) isDirty() bool {
@@ -120,4 +127,11 @@ func (s *IntSet) setDirty() {
 	if !s.isDirty() {
 		s.dirty = time.Now().Unix()
 	}
+}
+
+// Critical Section that adds a member to set
+func (s *IntSet) add(a int64) {
+	s.index[a] = struct{}{}
+	s.members = append(s.members, a)
+	s.Count++
 }
