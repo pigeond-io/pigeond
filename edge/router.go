@@ -14,7 +14,7 @@ import (
 	"sync"
 )
 
-func Init() {
+func Init(wsPort int, udpPort int, bufferSize int) {
 	log.Info("Edge server initialization started....")
 
 	var wg sync.WaitGroup
@@ -22,12 +22,12 @@ func Init() {
 
 	go func() {
 		defer wg.Done()
-		initClientListener(8002)
+		initClientListener(wsPort)
 	}()
 
 	go func() {
 		defer wg.Done()
-		initHubListener(8001)
+		initHubListener(udpPort, bufferSize)
 	}()
 
 	log.Info("Edge server initialization done ")
@@ -47,6 +47,6 @@ func initClientListener(port int) {
 	log.Fatal(response)
 }
 
-func initHubListener(port int) {
-	hub.Listen(port, 2048)
+func initHubListener(port int, bufferSize int) {
+	hub.Listen(port, bufferSize)
 }
