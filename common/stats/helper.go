@@ -4,37 +4,37 @@
 
 package stats
 
-import(
-  "sync/atomic"
-  "time"
+import (
   "fmt"
   "github.com/pigeond-io/pigeond/common/log"
   "runtime"
+  "sync/atomic"
+  "time"
 )
 
 const (
-  StatsTickInterval = 1*time.Second
+  StatsTickInterval = 1 * time.Second
 )
 
 var (
-  served    int64
-  live int64
-  failed    int64
+  served int64
+  live   int64
+  failed int64
 )
 
-func IncrLive(){
+func IncrLive() {
   atomic.AddInt64(&live, 1)
 }
 
-func DecrLive(){
+func DecrLive() {
   atomic.AddInt64(&live, -1)
 }
 
-func IncrFailed(){
+func IncrFailed() {
   atomic.AddInt64(&failed, 1)
 }
 
-func IncrServed(){
+func IncrServed() {
   atomic.AddInt64(&served, 1)
 }
 

@@ -5,9 +5,9 @@
 package log
 
 import (
+  "github.com/NebulousLabs/fastrand"
   joonix "github.com/joonix/log"
   "github.com/sirupsen/logrus"
-  "github.com/NebulousLabs/fastrand"
   "os"
   "path/filepath"
   "runtime"
@@ -70,19 +70,19 @@ func WithFields(args ...interface{}) *logrus.Entry {
 }
 
 func Instrument(start time.Time, onElapse func(string)) {
-    if debugMode {
-      // Every request instrument
+  if debugMode {
+    // Every request instrument
+    elapsed := time.Since(start)
+    onElapse(elapsed.String())
+  } else {
+    // Randomly instrument
+    b := fastrand.Bytes(1)
+    r := *(*uint8)(unsafe.Pointer(&b[0]))
+    if (r & ((r >> 4) << 4)) == r {
       elapsed := time.Since(start)
       onElapse(elapsed.String())
-    } else {
-      // Randomly instrument
-      b := fastrand.Bytes(1)
-      r := *(*uint8)(unsafe.Pointer(&b[0]))
-      if (r & ((r >> 4) << 4)) == r  {
-        elapsed := time.Since(start)
-        onElapse(elapsed.String())
-      }
     }
+  }
 }
 
 func Debug(args ...interface{}) {

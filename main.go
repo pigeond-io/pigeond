@@ -5,24 +5,24 @@
 package main
 
 import (
-	. "github.com/pigeond-io/pigeond/common"
-	"github.com/pigeond-io/pigeond/edge"
-	"os"
-	"gopkg.in/urfave/cli.v1"
 	"errors"
+	. "github.com/pigeond-io/pigeond/common"
 	"github.com/pigeond-io/pigeond/common/utils"
+	"github.com/pigeond-io/pigeond/edge"
+	"gopkg.in/urfave/cli.v1"
+	"os"
 )
 
-func main()  {
+func main() {
 	println(utils.GetHeader())
 
 	app := cli.NewApp()
 	app.Name = "pigeond"
 	app.Usage = "Start services"
 
-	app.Flags = []cli.Flag {
+	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name: "service",
+			Name:  "service",
 			Value: "hub",
 			Usage: "service name edge | hub | origin | data_store",
 		},

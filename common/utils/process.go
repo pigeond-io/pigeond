@@ -12,7 +12,7 @@ import (
   "syscall"
 )
 
-func InitProcess(processName string, initClosure func(string)){
+func InitProcess(processName string, initClosure func(string)) {
   initClosure(fmt.Sprintf("%s-%d", processName, os.Getpid()))
 }
 

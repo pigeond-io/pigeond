@@ -5,11 +5,11 @@
 package edge
 
 import (
+  "github.com/dgrijalva/jwt-go"
   "github.com/gobwas/ws"
   "github.com/gobwas/ws/wsutil"
   "github.com/pigeond-io/pigeond/common/log"
   "github.com/pigeond-io/pigeond/common/stats"
-  "github.com/dgrijalva/jwt-go"
   "io"
   "net"
   "sync"

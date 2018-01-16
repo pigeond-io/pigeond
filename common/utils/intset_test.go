@@ -4,7 +4,7 @@
 
 package utils_test
 
-import(
+import (
   "github.com/pigeond-io/pigeond/common/utils"
   "testing"
 )
@@ -18,7 +18,6 @@ func BenchmarkIntSetAdd(b *testing.B) {
     intset.Remove(n >> 2)
   }
 }
-
 
 func BenchmarkIntSetAdd3Threads(b *testing.B) {
   // run the Fib function b.N times
@@ -78,20 +77,20 @@ func TestIntSet(t *testing.T) {
   }
   //Membership
   var (
-    members = []int64{1, 3, 4, 5, 7}
+    members    = []int64{1, 3, 4, 5, 7}
     nonmembers = []int64{2, 6, 8}
   )
-  for _, member := range(members) {
+  for _, member := range members {
     if !intset.Contains(member) {
       t.Errorf("Should contain %d", member)
     }
   }
-  for _, member := range(nonmembers) {
+  for _, member := range nonmembers {
     if intset.Contains(member) {
       t.Errorf("Should not contain %d", member)
     }
   }
-  for _, member := range(intset.Members()) {
+  for _, member := range intset.Members() {
     if !intset.Contains(member) {
       t.Errorf("Should contain %d", member)
     }
