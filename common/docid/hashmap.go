@@ -24,15 +24,15 @@ func MakeHashMap(docIds ...DocId) *HashMap {
 		index: make(map[string]DocId),
 	}
 	for _, docId := range docIds {
-		hashmap.index[docId.Id()] = docId
+		hashmap.index[docId.DocId()] = docId
 	}
 	return hashmap
 }
 
-func (s *HashMap) Add(a DocId) {
+func (s *HashMap) Add(a DocId) error {
 	l := &s.lock
 	l.RLock()
-	id := a.Id()
+	id := a.DocId()
 	_, ok := s.index[id]
 	if !ok {
 		l.RUnlock()
@@ -42,9 +42,10 @@ func (s *HashMap) Add(a DocId) {
 	} else {
 		l.RUnlock()
 	}
+	return nil
 }
 
-func (s *HashMap) Remove(id string) {
+func (s *HashMap) Remove(id string) error {
 	l := &s.lock
 	l.RLock()
 	_, ok := s.index[id]
@@ -56,6 +57,7 @@ func (s *HashMap) Remove(id string) {
 	} else {
 		l.RUnlock()
 	}
+	return nil
 }
 
 func (s *HashMap) Get(id string) (DocId, error) {

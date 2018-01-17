@@ -58,9 +58,9 @@ func (s *HashSet) Clear() {
 }
 
 //Adds member to HashSet
-func (s *HashSet) Add(a DocId) {
+func (s *HashSet) Add(a DocId) error {
 	l := &s.lock
-	id := a.Id()
+	id := a.DocId()
 	l.RLock()
 	_, ok := s.index[id]
 	if !ok {
@@ -79,11 +79,12 @@ func (s *HashSet) Add(a DocId) {
 	} else {
 		l.RUnlock()
 	}
+	return nil
 }
 
 //Removes member from HashSet
-func (s *HashSet) Remove(a DocId) {
-	id := a.Id()
+func (s *HashSet) Remove(a DocId) error {
+	id := a.DocId()
 	l := &s.lock
 	l.RLock()
 	_, ok := s.index[id]
@@ -97,11 +98,12 @@ func (s *HashSet) Remove(a DocId) {
 	} else {
 		l.RUnlock()
 	}
+	return nil
 }
 
 //Checks whether a DocId belongs to the Set
 func (s *HashSet) Contains(a DocId) bool {
-	id := a.Id()
+	id := a.DocId()
 	l := &s.lock
 	l.RLock()
 	_, ok := s.index[id]
@@ -109,8 +111,8 @@ func (s *HashSet) Contains(a DocId) bool {
 	return ok
 }
 
-//Publishes members to channel
-func (s *HashSet) PublishMembers(blockSize int, channel chan []DocId) {
+//Returns members publisher
+func (s *HashSet) Members() Publisher {
 	l := &s.lock
 	l.RLock()
 	if s.shouldRebuildCache() {
@@ -118,24 +120,10 @@ func (s *HashSet) PublishMembers(blockSize int, channel chan []DocId) {
 		s.RebuildMembers()
 		l.RLock()
 	}
-	members := s.members
-	size := len(s.members)
+	//create a snapshot of slice
+	members := s.members[0:len(s.members)]
 	l.RUnlock()
-	if blockSize < 1 {
-		blockSize = 1024
-	}
-	// initiate a goroutine to send members to channel
-	go func() {
-		for start, end := 0, 0; start < size; start = end {
-			if start + blockSize > size {
-				end = size
-			} else {
-				end = start + blockSize
-			}
-			channel <- members[start:end]
-		}
-		channel <- []DocId{} // To Notify Termination
-	}()
+	return MakeSlicePublisher(members)
 }
 
 // Rebuilds Members Cache
@@ -155,7 +143,7 @@ func (s *HashSet) RebuildMembers() {
 
 // Critical Section that adds a member to set
 func (s *HashSet) add(a DocId) {
-	s.index[a.Id()] = a
+	s.index[a.DocId()] = a
 	s.members = append(s.members, a)
 	s.Count++
 }

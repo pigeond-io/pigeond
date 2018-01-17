@@ -6,21 +6,12 @@ package docid_test
 
 import (
 	"github.com/pigeond-io/pigeond/common/docid"
-	"strconv"
 	"testing"
 	"time"
 )
 
-type SId struct {
-	id int64
-}
-
-func (i *SId) Id() string {
-	return strconv.FormatInt(i.id, 36)
-}
-
-func ID(id int64) *SId {
-	return &SId{id: id}
+func ID(id int64) *docid.IntId {
+	return &docid.IntId{Id: id}
 }
 
 func BenchmarkHashSetAdd(b *testing.B) {
@@ -90,23 +81,31 @@ func TestHashSet(t *testing.T) {
 		t.Errorf("Count should be %d but is %d", count, set.Count)
 	}
 	//Membership
-	var (
-		members    = []int64{1, 3, 4, 5, 7}
-		nonmembers = []int64{2, 6, 8}
-	)
-	for _, member := range members {
-		if !set.Contains(ID(member)) {
-			t.Errorf("Should contain %d", member)
+	set.RebuildMembers()
+	publisher := set.Members()
+	channel := make(chan []docid.DocId)
+	publisher.Emit(channel, 0)
+	for slice := range channel {
+		if len(slice) == 0 {
+			break
+		}
+		index := 0
+		for _, docid := range slice {
+			if !set.Contains(docid) {
+				t.Errorf("Should contain %v", docid)
+			}
+			index++
+		}
+		if index != set.Count {
+			t.Errorf("Count should be %d but is %d", count, set.Count)
 		}
 	}
+	var (
+		nonmembers = []int64{2, 6, 8}
+	)
 	for _, member := range nonmembers {
 		if set.Contains(ID(member)) {
 			t.Errorf("Should not contain %d", member)
 		}
 	}
-	// for _, member := range set.Members() {
-	// 	if !set.Contains(member) {
-	// 		t.Errorf("Should contain %d", member)
-	// 	}
-	// }
 }
