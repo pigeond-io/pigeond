@@ -18,10 +18,12 @@ type Nil struct {
 
 type IntId struct {
 	Id int64
+	docid string
 }
 
 type ByteId struct {
 	Id []byte
+	docid string
 }
 
 type StrId struct {
@@ -37,11 +39,25 @@ func (s *Nil) Error() string {
 }
 
 func (i *IntId) DocId() string {
-	return strconv.FormatInt(i.Id, 36)
+	if i.docid == "" {
+		i.docid = strconv.FormatInt(i.Id, 10)
+	}
+	return i.docid
+}
+
+func (i *IntId) ClearDocId() {
+	i.docid = ""
 }
 
 func (i *ByteId) DocId() string {
-	return string(i.Id)
+	if i.docid == "" {
+		i.docid = string(i.Id)
+	}
+	return i.docid
+}
+
+func (i *ByteId) ClearDocId() {
+	i.docid = ""
 }
 
 func (i *StrId) DocId() string {

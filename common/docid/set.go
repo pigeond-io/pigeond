@@ -19,18 +19,18 @@ var (
   Caches becomes stale (dirty) when a member is removed from the Set
 */
 type HashSet struct {
-	Count              int                   //Member count
-	members            []DocId               //Members Cache
+	Count              int              //Member count
+	members            []DocId          //Members Cache
 	index              map[string]DocId //Index keyed with members
-	dirty              int64                 //Timestamp when the members cache got dirty
-	dirtyCacheDuration time.Duration         //Duration for which dirty members cache is valid
-	lock               sync.RWMutex          //ReadWrite synchronization mutex
+	dirty              int64            //Timestamp when the members cache got dirty
+	dirtyCacheDuration time.Duration    //Duration for which dirty members cache is valid
+	lock               sync.RWMutex     //ReadWrite synchronization mutex
 }
 
 /*
 	Constructor to create HashSets.
-	first parameter is mandatory and takes dirtyCacheDuration time.Duration object as reference, if nil dirtyCacheDuration is set to default dirty interval i.e. defaultDirtyCacheDuration.
-	next you can pass on all the members of type docId you would initialize set with.
+	First parameter is mandatory and takes dirtyCacheDuration time.Duration object as reference, if nil dirtyCacheDuration is set to default dirty interval i.e. defaultDirtyCacheDuration.
+	Next you can pass on all the members of type docId you would initialize set with.
 */
 func MakeHashSet(dirtyCacheDuration *time.Duration, members ...DocId) *HashSet {
 	if dirtyCacheDuration == nil {
@@ -130,7 +130,7 @@ func (s *HashSet) Members() Publisher {
 func (s *HashSet) RebuildMembers() {
 	l := &s.lock
 	l.Lock()
-	members := make([]DocId, s.Count, s.Count << 1)
+	members := make([]DocId, s.Count, s.Count<<1)
 	index := 0
 	for _, docId := range s.index {
 		members[index] = docId

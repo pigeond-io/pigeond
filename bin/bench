@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ -z "$1" ]
+then
+  /usr/bin/env go test -v -race -bench=. -benchmem -tags "kcp" ./...
+else
+  /usr/bin/env go test -v -race -bench=. -benchmem -tags "kcp" "$@"
+fi
