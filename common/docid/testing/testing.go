@@ -1,3 +1,7 @@
+// Copyright 2018 The PigeonD Authors. All rights reserved.
+// Use of this source code is governed by a GNU AGPL v3.0
+// license that can be found in the AGPL V3 LICENSE file.
+
 package testing
 
 import (
@@ -8,11 +12,11 @@ import (
 )
 
 var (
-	ShouldContainEdge = "Should contain %v -> %v"
+	ShouldContainEdge    = "Should contain %v -> %v"
 	ShouldNotContainEdge = "Should not contain %v -> %v"
 	CountShouldBeXButIsY = "Count should be %d but is %d"
-	ShouldContain = "Should contain %v"
-	ShouldNotContain = "Should not contain %v"
+	ShouldContain        = "Should contain %v"
+	ShouldNotContain     = "Should not contain %v"
 )
 
 func ID(id int64) *IntId {
@@ -37,7 +41,7 @@ type TestTuple struct {
 	t *testing.T
 }
 
-func (tt *TestTuple) CountShouldBe(countExpected, countActual int) (* TestTuple) {
+func (tt *TestTuple) CountShouldBe(countExpected, countActual int) *TestTuple {
 	if countExpected != countActual {
 		tt.t.Errorf(CountShouldBeXButIsY, countExpected, countActual)
 	}
@@ -50,20 +54,20 @@ type TestTupleSet struct {
 	s Set
 }
 
-func TestSet(t *testing.T, s Set) (* TestTupleSet){
-	tt := &TestTupleSet{s:s}
+func TestSet(t *testing.T, s Set) *TestTupleSet {
+	tt := &TestTupleSet{s: s}
 	tt.t = t
 	return tt
 }
 
-func (tt *TestTupleSet) ShouldContain(a DocId) (* TestTupleSet){
+func (tt *TestTupleSet) ShouldContain(a DocId) *TestTupleSet {
 	if !tt.s.Contains(a) {
 		tt.t.Errorf(ShouldContain, a)
 	}
 	return tt
 }
 
-func (tt *TestTupleSet) ShouldNotContain(a DocId) (* TestTupleSet){
+func (tt *TestTupleSet) ShouldNotContain(a DocId) *TestTupleSet {
 	if tt.s.Contains(a) {
 		tt.t.Errorf(ShouldNotContain, a)
 	}
@@ -76,20 +80,20 @@ type TestTupleEdgeSet struct {
 	e EdgeSet
 }
 
-func TestEdgeSet(t *testing.T, e EdgeSet) (* TestTupleEdgeSet){
-	tt := &TestTupleEdgeSet{e:e}
+func TestEdgeSet(t *testing.T, e EdgeSet) *TestTupleEdgeSet {
+	tt := &TestTupleEdgeSet{e: e}
 	tt.t = t
 	return tt
 }
 
-func (tt *TestTupleEdgeSet) ShouldContain(a DocId, b DocId) (* TestTupleEdgeSet){
+func (tt *TestTupleEdgeSet) ShouldContain(a DocId, b DocId) *TestTupleEdgeSet {
 	if !tt.e.Contains(a, b) {
 		tt.t.Errorf(ShouldContainEdge, a, b)
 	}
 	return tt
 }
 
-func (tt *TestTupleEdgeSet) ShouldNotContain(a DocId, b DocId) (* TestTupleEdgeSet){
+func (tt *TestTupleEdgeSet) ShouldNotContain(a DocId, b DocId) *TestTupleEdgeSet {
 	if tt.e.Contains(a, b) {
 		tt.t.Errorf(ShouldNotContainEdge, a, b)
 	}

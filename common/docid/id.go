@@ -4,25 +4,25 @@
 
 package docid
 
-import(
+import (
 	"strconv"
 )
 
 var (
 	emptyString = ""
-	eof = "EOF Error"
+	eof         = "EOF Error"
 )
 
 type Nil struct {
 }
 
 type IntId struct {
-	Id int64
+	Id    int64
 	docid string
 }
 
 type ByteId struct {
-	Id []byte
+	Id    []byte
 	docid string
 }
 

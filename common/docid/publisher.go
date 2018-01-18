@@ -4,14 +4,16 @@
 
 package docid
 
-import("runtime")
+import (
+	"runtime"
+)
 
 type SlicePublisher struct {
 	slice []DocId
 }
 
-func MakeSlicePublisher(slice []DocId) (s *SlicePublisher){
-	sPublisher := &SlicePublisher {
+func MakeSlicePublisher(slice []DocId) (s *SlicePublisher) {
+	sPublisher := &SlicePublisher{
 		slice: slice,
 	}
 	return sPublisher
@@ -25,7 +27,7 @@ func (s *SlicePublisher) Emit(channel chan []DocId, blockSize int) {
 	// Initiate a goroutine
 	go func() {
 		for start, end, size := 0, 0, len(s.slice); start < size; start = end {
-			if start + blockSize > size {
+			if start+blockSize > size {
 				end = size
 			} else {
 				end = start + blockSize

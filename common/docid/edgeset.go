@@ -29,7 +29,7 @@ func MakeHashEdgeSet(members ...map[DocId]DocId) *HashEdgeSet {
 			targetEdges, targetExists := edges.targetEdges[target.DocId()]
 			if !sourceExists {
 				sourceEdges = edges.addSource(source)
-			} 
+			}
 			if !targetExists {
 				targetEdges = edges.addTarget(target)
 			}
@@ -51,7 +51,7 @@ func (s *HashEdgeSet) Add(source DocId, target DocId) error {
 		l.Lock()
 		if !sourceExists {
 			sourceEdges = s.addSource(source)
-		} 
+		}
 		if !targetExists {
 			targetEdges = s.addTarget(target)
 		}
@@ -200,7 +200,7 @@ func (s *HashEdgeSet) RemoveTarget(target DocId) error {
 func (s *HashEdgeSet) addSource(source DocId) Set {
 	set := MakeHashSet(nil)
 	s.sourceEdges[source.DocId()] = set
-	return set 
+	return set
 }
 
 func (s *HashEdgeSet) addTarget(target DocId) Set {

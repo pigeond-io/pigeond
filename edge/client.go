@@ -8,10 +8,12 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
+	"github.com/pigeond-io/pigeond/common/docid"
 	"github.com/pigeond-io/pigeond/common/log"
 	"github.com/pigeond-io/pigeond/common/stats"
 	"io"
 	"net"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -32,35 +34,34 @@ var (
 // For each WsClient two go routines are created.
 // One goroutine for reading client requests. One goroutine for writing server updates
 type WsClient struct {
-	Id        int64     // Client Id - Unique for each connection
-	SessionId int64     // Each connection belongs to a unique Session
-	UserId    int64     // Each may connection belongs to a unique userid or is guest
-	IsClosed  bool      // Is WebSocket closed
-	Conn      net.Conn  // TCP based Websocket Connection
-	RChan     chan int  // ClientRequestsRoutine Control Channel
-	WChan     chan int  // ServerResponsesRoutine Control Channel
-	once      sync.Once // Singleton to close WebSocket once
-	state     int32     // Internal State of the WsClient
+	docid.StrId             // Client Id - Unique for each connection
+	SessionId   docid.DocId // Each connection belongs to a unique Session
+	UserId      docid.DocId // Each may connection belongs to a unique userid or is guest
+	IsClosed    bool        // Is WebSocket closed
+	Conn        net.Conn    // TCP based Websocket Connection
+	RChan       chan int    // ClientRequestsRoutine Control Channel
+	WChan       chan int    // ServerResponsesRoutine Control Channel
+	once        sync.Once   // Singleton to close WebSocket once
+	state       int32       // Internal State of the WsClient
 }
 
-func getNextId() int64 {
-	return atomic.AddInt64(&seq, 1)
-}
-
-// TODO: Generate from the Token
-func getSessionId(token *jwt.Token) int64 {
-	return 101
+func getNextId() string {
+	return strconv.FormatInt(atomic.AddInt64(&seq, 1), 32)
 }
 
 // TODO: Generate from the Token
-func getUserId(token *jwt.Token) int64 {
-	return 100
+func getSessionId(token *jwt.Token) docid.DocId {
+	return &docid.StrId{Id: "SessId"}
+}
+
+// TODO: Generate from the Token
+func getUserId(token *jwt.Token) docid.DocId {
+	return &docid.StrId{Id: "UserId"}
 }
 
 func InitWsClient(conn net.Conn, token *jwt.Token) {
 	client := &WsClient{
 		Conn:      conn,
-		Id:        getNextId(),
 		SessionId: getSessionId(token),
 		UserId:    getUserId(token),
 		IsClosed:  false,
@@ -68,6 +69,7 @@ func InitWsClient(conn net.Conn, token *jwt.Token) {
 		WChan:     make(chan int),
 		state:     0,
 	}
+	client.Id = getNextId()
 	stats.IncrServed()
 	stats.IncrLive()
 	log.WithFields("edge.client", "InitWsClient").Debug("Id: ", client.SessionId, ", keepAliveCounts: ", keepAliveCounts)

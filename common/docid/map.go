@@ -14,7 +14,7 @@ import (
 */
 type HashMap struct {
 	index map[string]DocId //index map to map Id to DocId
-	lock  sync.RWMutex          //ReadWrite synchronization mutex
+	lock  sync.RWMutex     //ReadWrite synchronization mutex
 }
 
 // Constructor to create hashmap.

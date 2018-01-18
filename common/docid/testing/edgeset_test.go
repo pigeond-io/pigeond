@@ -65,7 +65,7 @@ func TestHashEdgeSet(t *testing.T) {
 	edgeset.Add(a, c)
 	edgeset.Add(b, a)
 	edgeset.Add(d, b)
-	
+
 	// Forward Edges Should be Contained
 	_ = tt.
 		ShouldContain(a, b).
@@ -74,9 +74,9 @@ func TestHashEdgeSet(t *testing.T) {
 		ShouldContain(d, b)
 	// Backward Edges Should Not be Contained
 	_ = tt.
-		ShouldNotContain(c,a).
-		ShouldNotContain(b,d).
-		ShouldNotContain(c,d)
+		ShouldNotContain(c, a).
+		ShouldNotContain(b, d).
+		ShouldNotContain(c, d)
 
 	// Sources Publisher
 	publisher := edgeset.Sources(b)
@@ -119,7 +119,7 @@ func TestHashEdgeSet(t *testing.T) {
 
 	edgeset.RemoveSource(a)
 	tt.
-		ShouldNotContain(a,b).
-		ShouldNotContain(a,c).
+		ShouldNotContain(a, b).
+		ShouldNotContain(a, c).
 		ShouldContain(b, a)
 }
