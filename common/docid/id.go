@@ -13,6 +13,16 @@ var (
 	eof         = "EOF Error"
 )
 
+func IsNil(docId DocId) bool {
+	var result = false
+	if docId != nil {
+		_, result = docId.(*Nil)
+	} else {
+		result = true
+	}
+	return result
+}
+
 type Nil struct {
 }
 

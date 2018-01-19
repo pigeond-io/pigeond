@@ -23,7 +23,7 @@ var flags = []cli.Flag{
 	},
 	cli.StringFlag{
 		Name:  "ws-address",
-		Value: "localhost:8000",
+		Value: "localhost:8765",
 		Usage: "websocket port",
 	},
 	cli.IntFlag{
@@ -83,10 +83,10 @@ func main() {
 		switch service {
 		case "edge":
 			addr := c.String("ws-address")
-			wsPort := c.Int("wd-port")
-			udpPort := c.Int("udp-port")
-			wsBufferSize := c.Int("ws-buffer-size")
-			edge.Init(wsPort, udpPort, wsBufferSize)
+			// wsPort := c.Int("wd-port")
+			// udpPort := c.Int("udp-port")
+			// wsBufferSize := c.Int("ws-buffer-size")
+			// edge.Init(wsPort, udpPort, wsBufferSize)
 			edge.InitWsServer(addr)
 			break
 		default:

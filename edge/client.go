@@ -11,6 +11,7 @@ import (
 	"github.com/pigeond-io/pigeond/common/docid"
 	"github.com/pigeond-io/pigeond/common/log"
 	"github.com/pigeond-io/pigeond/common/stats"
+	"fmt"
 	"io"
 	"net"
 	"strconv"
@@ -72,14 +73,18 @@ func InitWsClient(conn net.Conn, token *jwt.Token) {
 	client.Id = getNextId()
 	stats.IncrServed()
 	stats.IncrLive()
-	log.WithFields("edge.client", "InitWsClient").Debug("Id: ", client.SessionId, ", keepAliveCounts: ", keepAliveCounts)
+	log.WithFields("edge.client", "InitWsClient").Debug(client.String(), ", keepAliveCounts: ", keepAliveCounts)
 	go client.wsClientRequestsProcessor()
 	go client.wsServerResponsesProcessor()
 }
 
+func (client *WsClient) String() string {
+	return fmt.Sprintf("WsClient #%s", client.DocId())
+}
+
 func (client *WsClient) Close() {
 	client.once.Do(func() {
-		log.WithFields("edge.client", "Close").Debug("Id: ", client.SessionId)
+		log.WithFields("edge.client", "Close").Debug(client.String())
 		client.IsClosed = true
 		stats.DecrLive()
 		go func() {
@@ -106,11 +111,11 @@ func (client *WsClient) wsClientRequestsProcessor() {
 				if err == io.EOF || ok {
 					client.Close()
 				} else {
-					log.WithFields("edge.client").Error("Id: ", client.SessionId, ", Err: ", err)
+					log.WithFields("edge.client").Error(client.String(), ", Err: ", err)
 				}
 				break
 			}
-			log.WithFields("edge.client", "request").Debug("Id: ", client.SessionId, ", Op: ", op, ", Data: ", string(bts))
+			log.WithFields("edge.client", "request").Debug(client.String(), ", Op: ", op, ", Data: ", string(bts))
 			// edge.DispatchCommands(conn, cmdChannel, bts)
 		}
 	}
@@ -135,7 +140,7 @@ func (client *WsClient) wsServerResponsesProcessor() {
 			// }
 			if count == keepAliveCounts {
 				count = 0
-				log.WithFields("edge.client", "Ping").Debug("Id: ", client.SessionId)
+				log.WithFields("edge.client", "Ping").Debug(client.String())
 				wsutil.WriteServerMessage(client.Conn, ws.OpPing, emptyBuffer)
 			}
 		}
@@ -145,7 +150,7 @@ func (client *WsClient) wsServerResponsesProcessor() {
 func onConnClose(client *WsClient) {
 	state := atomic.AddInt32(&client.state, 1)
 	if state == 2 {
-		log.WithFields("edge.client", "Conn.Close").Debug("Id: ", client.SessionId)
+		log.WithFields("edge.client", "Conn.Close").Debug(client.String())
 		client.Conn.Close()
 		close(client.WChan)
 		close(client.RChan)
