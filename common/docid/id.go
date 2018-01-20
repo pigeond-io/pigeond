@@ -50,7 +50,7 @@ func (s *Nil) Error() string {
 
 func (i *IntId) DocId() string {
 	if i.docid == "" {
-		i.docid = strconv.FormatInt(i.Id, 10)
+		i.docid = strconv.FormatInt(i.Id, 32)
 	}
 	return i.docid
 }

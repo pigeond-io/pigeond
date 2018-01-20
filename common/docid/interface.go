@@ -8,6 +8,7 @@ var (
 	EOF = &Nil{} //End of file. Empty DocId
 )
 
+//DocId defines an interface that has a doc id
 type DocId interface {
 	DocId() string
 }
@@ -50,6 +51,14 @@ type Set interface {
 	Add(member DocId) error
 	//Removes a member from collections
 	Remove(member DocId) error
+}
+
+// Buffer is common interface that encapsulates different implementations for double buffering techniques
+type DoubleBuffer interface {
+	//Adds a member to buffer
+	Add(member DocId) error
+	//Return all the elements in buffer and clears the buffer
+	Slice() []DocId
 }
 
 // ImmutableEdgeSet defines interface of read only EdgeSet
