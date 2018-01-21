@@ -14,6 +14,12 @@
   version = "v3.1.0"
 
 [[projects]]
+  name = "github.com/fzzy/radix"
+  packages = ["redis/resp"]
+  revision = "031cc11e9800a2626ee2ae629655a922b630a07d"
+  version = "v0.5.6"
+
+[[projects]]
   branch = "master"
   name = "github.com/gobwas/httphead"
   packages = ["."]
@@ -22,13 +28,20 @@
 [[projects]]
   branch = "master"
   name = "github.com/gobwas/pool"
-  packages = [".","pbufio","pbytes"]
+  packages = [
+    ".",
+    "pbufio",
+    "pbytes"
+  ]
   revision = "e294a5482d9a8523f8e6b2744ea2185083c838af"
 
 [[projects]]
   branch = "master"
   name = "github.com/gobwas/ws"
-  packages = [".","wsutil"]
+  packages = [
+    ".",
+    "wsutil"
+  ]
   revision = "48a5ceab2cbeff56f13c0328c63c3393b92ec9aa"
 
 [[projects]]
@@ -52,13 +65,19 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["blake2b","ssh/terminal"]
+  packages = [
+    "blake2b",
+    "ssh/terminal"
+  ]
   revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "fff93fa7cd278d84afc205751523809c464168ab"
 
 [[projects]]
@@ -70,6 +89,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eeb1d593b603f0b2c6bf49a0ae1305a8dfaf0620061d7f79a65762ef1b5de4aa"
+  inputs-digest = "09eec2bad2992d5c3b74ebd1f2b454e5ff27b3baf53bd4de7e2f87f671b2030f"
   solver-name = "gps-cdcl"
   solver-version = 1
