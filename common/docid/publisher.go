@@ -21,6 +21,9 @@ func MakeSlicePublisher(slice []DocId) (s *SlicePublisher) {
 
 //Emit slice elements in block of blockSize to channel
 func (s *SlicePublisher) Emit(channel chan []DocId, blockSize int) {
+	if s.slice == nil {
+		return
+	}
 	if blockSize < 1 {
 		blockSize = 1024 //default blockSize
 	}

@@ -23,6 +23,10 @@ func IsNil(docId DocId) bool {
 	return result
 }
 
+func Equals(a DocId, b DocId) bool {
+	return a.DocId() == b.DocId()
+}
+
 type Nil struct {
 }
 

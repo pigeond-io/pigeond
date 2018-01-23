@@ -83,3 +83,23 @@ type EdgeSet interface {
 	//Removes the target and all the links terminating to target
 	RemoveTarget(target DocId) error
 }
+
+type AddIndexEntryWriter interface {
+	Add(key DocId, val DocId) error
+}
+
+type RemoveIndexEntryWriter interface {
+	Remove(key DocId, val DocId) error
+}
+
+type AddIndexEntryWriterCallback func(AddIndexEntryWriter) error
+
+type RemoveIndexEntryWriterCallback func(RemoveIndexEntryWriter) error
+
+type ImmutableIndexMap interface {
+	Query(indexTag int, key DocId) (Publisher, error)
+	Add(indexTag int, callback AddIndexEntryWriterCallback) error
+	Remove(indexTag int, callback RemoveIndexEntryWriterCallback) error
+	RemoveKey(indexTag int, key DocId) error
+	RemoveValue(indexTag int, val DocId) error
+}

@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/fzzy/radix/redis/resp"
 	"io"
 )
@@ -40,6 +41,8 @@ import (
 
 var (
 	InvalidCommand = errors.New("Invalid Command")
+	OkResponse     = "+OK\r\n"
+	ErrorFmt       = "-Error %s\r\n"
 )
 
 type Token struct {
@@ -48,12 +51,12 @@ type Token struct {
 
 type Command struct {
 	Tokens []Token
-	Error  error
+	Err    error
 }
 
 func (cmd *Command) String() string {
 	var buffer bytes.Buffer
-	if cmd.Error == nil {
+	if cmd.Err == nil {
 		buffer.WriteString("> ")
 		for _, token := range cmd.Tokens {
 			buffer.Write(token.Bytes)
@@ -61,13 +64,20 @@ func (cmd *Command) String() string {
 		}
 	} else {
 		buffer.WriteString("> ERROR ")
-		buffer.WriteString(cmd.Error.Error())
+		buffer.WriteString(cmd.Err.Error())
 	}
 	return buffer.String()
 }
 
 func (cmd *Command) Ok() bool {
-	return cmd.Error == nil && cmd.Tokens != nil && len(cmd.Tokens) > 0
+	return cmd.Err == nil && cmd.Tokens != nil && len(cmd.Tokens) > 0
+}
+
+func (cmd *Command) Error() string {
+	if cmd.Err == nil {
+		return ""
+	}
+	return cmd.Err.Error()
 }
 
 // Make sure you call this after you have checked if command is Ok()
@@ -76,8 +86,12 @@ func (cmd *Command) Action() string {
 }
 
 // Make sure you call this after you have checked if command is Ok()
-func (cmd *Command) Args() []Token {
-	return cmd.Tokens[1:]
+func (cmd *Command) Args() [][]byte {
+	return collectBytesFromTokens(cmd.Tokens[1:])
+}
+
+func ErrorResponse(reason string) string {
+	return fmt.Sprintf(ErrorFmt, reason)
 }
 
 //Read supports Multi Commands (aka RESP Pipeline)
@@ -114,12 +128,12 @@ func setCommand(cmd *Command, msg *resp.Message) bool {
 					cmd.Tokens = append(cmd.Tokens, Token{Bytes: slice})
 				} else {
 					ok = false
-					cmd.Error = err
+					cmd.Err = err
 				}
 			}
 		} else {
 			ok = false
-			cmd.Error = err
+			cmd.Err = err
 		}
 	case resp.SimpleStr, resp.BulkStr:
 		slice, err := msg.Bytes()
@@ -127,11 +141,19 @@ func setCommand(cmd *Command, msg *resp.Message) bool {
 			cmd.Tokens = append(cmd.Tokens, Token{Bytes: slice})
 		} else {
 			ok = false
-			cmd.Error = err
+			cmd.Err = err
 		}
 	default:
 		ok = false
-		cmd.Error = InvalidCommand
+		cmd.Err = InvalidCommand
 	}
 	return ok
+}
+
+func collectBytesFromTokens(tokenSlice []Token) [][]byte {
+	sliceBuf := make([][]byte, len(tokenSlice))
+	for i, token := range tokenSlice {
+		sliceBuf[i] = token.Bytes
+	}
+	return sliceBuf
 }

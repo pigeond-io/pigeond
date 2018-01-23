@@ -8,3 +8,12 @@ package events
 type Message interface {
 	Body() []byte
 }
+
+type Subscriber interface {
+	Subscribe(topic string) bool
+	Unsubscribe(topic string) bool
+}
+
+type Publisher interface {
+	Publish(topic string, msgs ...Message) bool
+}

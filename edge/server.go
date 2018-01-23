@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gobwas/ws"
+	"github.com/pigeond-io/pigeond/common/docid"
 	"github.com/pigeond-io/pigeond/common/log"
 	"github.com/pigeond-io/pigeond/common/stats"
 	"io"
@@ -23,33 +24,54 @@ var (
 	jwtSecretKey              = []byte("PigeondJWTSecretKey")
 )
 
+const (
+	SessionIdx int = iota
+	UserIdx
+	TopicIdx
+)
+
+type WsServer struct {
+	indexMap docid.ImmutableIndexMap
+	listener net.Listener
+}
+
 // Zero-copy Upgrade Websocket Server which allows both anonymous and jwt based authorized connections.
 // There is no method in the JavaScript WebSockets API for specifying additional headers for the client/browser to send
 // WsServer uses request uri path as the JwtToken
 func InitWsServer(address string) {
-	server, err := net.Listen("tcp", address)
+	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.WithFields("edge.server").Fatal(err)
 	}
-	acceptWsClients(server)
+	server := &WsServer{
+		indexMap: docid.MakeImmutableIndexMap(SessionIdx, UserIdx, TopicIdx),
+		listener: listener,
+	}
+	server.acceptWsClients()
+}
+
+// Public interface for clients to perform action on Server Index
+func (server *WsServer) OnIndex(indexActionCallback func(docid.ImmutableIndexMap)) {
+	indexActionCallback(server.indexMap)
 }
 
 // Server run loop that accepts new client connections
-func acceptWsClients(server net.Listener) {
+func (server *WsServer) acceptWsClients() {
+	listener := server.listener
 	for {
-		conn, err := server.Accept()
+		conn, err := listener.Accept()
 		if err != nil {
 			stats.IncrFailed()
 			log.WithFields("edge.server").Error(err)
 		} else {
-			go initWsClient(conn)
+			go server.initWsClient(conn)
 		}
 	}
 }
 
 // Initiating a Websocket Connection
 // This method enables tcp keep alive, upgrades the connection to websocket, parses and validates the jwt token if provided and initiate the wsclient
-func initWsClient(conn net.Conn) {
+func (server *WsServer) initWsClient(conn net.Conn) {
 	tcp, ok := conn.(*net.TCPConn)
 	if ok {
 		tcp.SetKeepAlive(true)
@@ -71,7 +93,7 @@ func initWsClient(conn net.Conn) {
 		if !allowAnonymousConnections {
 			terminateConnection(conn, "Anonymous Connections Not Allowed")
 		} else {
-			InitWsClient(conn, nil)
+			InitWsClient(server, conn, nil)
 		}
 	} else {
 		jToken, err := parseToken(token)
@@ -83,7 +105,7 @@ func initWsClient(conn net.Conn) {
 			terminateConnection(conn, "Invalid Token")
 			return
 		}
-		InitWsClient(conn, jToken)
+		InitWsClient(server, conn, jToken)
 	}
 }
 

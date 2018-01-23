@@ -11,19 +11,19 @@ import (
 	"testing"
 )
 
-func shouldBeParsedSuccessfully(t *testing.T, cmd string){
+func shouldBeParsedSuccessfully(t *testing.T, cmd string) {
 	t.Errorf("%q should be parsed successfully", cmd)
 }
 
-func shouldBeOk(t *testing.T, cmd string){
+func shouldBeOk(t *testing.T, cmd string) {
 	t.Errorf("%q should be ok", cmd)
 }
 
-func shouldHaveNoArgs(t *testing.T, cmd string){
+func shouldHaveNoArgs(t *testing.T, cmd string) {
 	t.Errorf("%q should have no args", cmd)
 }
 
-func shouldBeThis(t *testing.T, what string, expected interface{}, was interface{}){
+func shouldBeThis(t *testing.T, what string, expected interface{}, was interface{}) {
 	t.Errorf("Expected %s to be %v got this %v", what, expected, was)
 }
 
@@ -34,7 +34,7 @@ func argLiteral(i int) string {
 	return buffer.String()
 }
 
-func testRespCommand(t *testing.T, cmd *resp.Command, expectedAction string, expectedArgs ...string){
+func testRespCommand(t *testing.T, cmd *resp.Command, expectedAction string, expectedArgs ...string) {
 	if !cmd.Ok() {
 		shouldBeOk(t, cmd.String())
 	} else {
@@ -45,8 +45,8 @@ func testRespCommand(t *testing.T, cmd *resp.Command, expectedAction string, exp
 				shouldBeThis(t, "Args", len(expectedArgs), len(cmd.Args()))
 			} else {
 				for i, arg := range cmd.Args() {
-					if string(arg.Bytes) != expectedArgs[i]  {
-						shouldBeThis(t, argLiteral(i), expectedArgs[i], arg.Bytes)
+					if string(arg) != expectedArgs[i] {
+						shouldBeThis(t, argLiteral(i), expectedArgs[i], arg)
 					}
 				}
 			}
@@ -82,11 +82,11 @@ func TestCommandWithoutArgsUsingString(t *testing.T) {
 	testCommand(t, "+SUBSCRIBE\r\n", "SUBSCRIBE")
 }
 
-func TestCommandWithoutArgsUsingBulkString(t *testing.T){
+func TestCommandWithoutArgsUsingBulkString(t *testing.T) {
 	testCommand(t, "$9\r\nSUBSCRIBE\r\n", "SUBSCRIBE")
 }
 
-func TestCommandWithoutArgsUsingArray(t *testing.T){
+func TestCommandWithoutArgsUsingArray(t *testing.T) {
 	testCommand(t, "*1\r\n$9\r\nSUBSCRIBE\r\n", "SUBSCRIBE")
 }
 
@@ -95,7 +95,7 @@ func TestCommandWithArgs(t *testing.T) {
 	testCommand(t, "*2\r\n+SUBSCRIBE\r\n+MyTopic\r\n", "SUBSCRIBE", "MyTopic")
 }
 
-func TestMultipleCommands(t *testing.T){
+func TestMultipleCommands(t *testing.T) {
 	cmds, ok := testMultiCommand(t, "*2\r\n$9\r\nSUBSCRIBE\r\n$7\r\nMyTopic\r\n*3\r\n+SUBSCRIBE\r\n+MyTopic\r\n+MySubTopic\r\n*1\r\n$9\r\nSUBSCRIBE\r\n+UNSUBSCRIBE\r\n", 4)
 	if ok {
 		testRespCommand(t, cmds[0], "SUBSCRIBE", "MyTopic")
